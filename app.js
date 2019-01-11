@@ -3,9 +3,21 @@ const app = express()
 const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
 const morgan = require('morgan')
-
+const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
+mongoose.connect('mongodb://passport-user:Deepak123@ds253284.mlab.com:53284/verification',()=>{console.log('connected to database')},{useNewUrlParser: true})
  app.use(morgan('dev'))
-
+app.use(bodyParser.urlencoded({extended:false}))
+app.use(bodyParser.json())
+app.use((req,res,next)=>{
+           res.header('Acess-Controll-Allow-Origin','*')
+           res.header('Acess-controll-Allow-headers','Origin, X-Requested-With,Content-Type,Accept,Authorization')
+           if(req.method === 'OPTIONS'){
+           res.header('Acess-Controll-Allow-Method','PUT,POST,PATCH,DELETE.GET')
+           return res.status(200).json({})
+           }
+           next()
+  })
 app.use('/products', productRoutes)
 
 
